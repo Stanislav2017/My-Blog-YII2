@@ -19,8 +19,12 @@ use yii\web\IdentityInterface;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
+    const STATUS_WAIT = 0;
+    const STATUS_ACTIVE = 1;
+    const STATUS_DELETE = 2;
+
+    const POSITION_USER = 0;
+    const POSITION_ADMIN = 1;
     /**
      * {@inheritdoc}
      */
@@ -35,39 +39,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             TimestampBehavior::className(),
         ];
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            ['is_admin', 'default', 'value' => 0],
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'email' => 'Email',
-            'password' => 'Password',
-            'is_admin' => 'Is Admin',
-            'photo' => 'Photo',
-        ];
-    }
-
-    public function getUsername()
-    {
-        return Yii::$app->user->identity->username;
-    }
-
 
     /**
      * Finds an identity by the given ID.

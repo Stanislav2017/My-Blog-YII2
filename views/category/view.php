@@ -18,12 +18,20 @@ use yii\widgets\LinkPager;
                 <div class="card-body">
                     <h2 class="card-title"><?php echo $model->title ?></h2>
                     <p class="card-text"><?php echo $model->content ?></p>
-                    <a href="#" class="btn btn-primary">Read More &rarr;</a>
+                    <?php echo Html::a('Read More  &rarr;', ['site/view', 'alias' => $model->alias], ['class' => 'btn btn-primary']) ?>
                 </div>
                 <div class="card-footer text-muted">
-                    <?php echo $model->date ?>
-                    Posted on January 1, 2017 by
-                    <a href="#">My Blog</a>
+                    Posted on <?php echo date('M d, Y', strtotime($model->date)); ?>
+                    <!--Posted on January 1, 2017-->
+                    by <a href="#"><?php echo $model->user->username ?></a>
+                    <span class="float-right">
+                        <i id="like"
+                           data-id="<?php echo $model->id ?>"
+                           class="<?php echo (isset($_SESSION['article']['likes'][$model->id]) && in_array(Yii::$app->user->id, $_SESSION['article']['likes'][$model->id])) ? "fa fa-heart" : "fa fa-heart-o" ?>"> <?php echo $model->like ?></i>
+
+                        <i class="fa fa-eye" ></i> <?php echo $model->viewed ?>
+                        <i class="fa fa-comments"></i> <?php echo $model->getCommentsCount() ?>
+                    </span>
                 </div>
             </div>
         <?php endforeach; ?>

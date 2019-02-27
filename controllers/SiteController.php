@@ -3,6 +3,13 @@
 namespace app\controllers;
 
 use function alias;
+use app\models\Like;
+use function array_search;
+use function compact;
+use const false;
+use function in_array;
+use function is_bool;
+use function json_encode;
 use const null;
 use function print_r;
 use function transliterate;
@@ -18,11 +25,13 @@ use app\models\Article;
 use app\models\Category;
 use app\models\SignupForm;
 use app\models\LoginForm;
+use yii\web\NotFoundHttpException;
 
 class SiteController extends Controller
 {
     public function beforeAction($action)
     {
+        /*$this->enableCsrfValidation = false;*/
         $categories = [];
         $element_number = 0;
         foreach (Category::find()->asArray()->limit(6)->all() as $key => $category) {
@@ -121,12 +130,15 @@ class SiteController extends Controller
     public function actionSignUp()
     {
         $model = new SignupForm();
-
-        if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
-                if (Yii::$app->getUser()->login($user)) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            try{
+                $user = $model->signup();
+                if (Yii::$app->user->login($user)) {
                     return $this->goHome();
                 }
+            } catch (\RuntimeException $e){
+                Yii::$app->errorHandler->logException($e);
+                Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
 
@@ -140,9 +152,51 @@ class SiteController extends Controller
         Yii::$app->user->logout();
         return $this->goHome();
     }
-
-    public function actionTest()
+    
+    public function actionView($alias)
     {
-        print_r(alias('Пиво с gренкой', '_'));
+        $model = Article::findOne(['alias' => $alias]);
+        if (!$model) {
+            throw new NotFoundHttpException('Article not found');
+        }
+        $this->view->title = $model->title;
+        return $this->render('view', compact('model'));
+    }
+
+    public function actionLike()
+    {
+        if (!Yii::$app->user->isGuest) {
+            if (Yii::$app->request->isAjax) {
+                $id = Yii::$app->request->post('id');
+                $article = Article::findOne($id);
+                if (!$article) {
+                    throw new NotFoundHttpException('Article not found');
+                }
+                $user_id = Yii::$app->user->id;
+                $session = Yii::$app->session;
+                if (!$session->isActive) {
+                    $session->open();
+                }
+
+                $key = array_search($user_id, (!isset($_SESSION['article']['likes'][$article->id]) ? [] : $_SESSION['article']['likes'][$article->id]));
+                if (is_bool($key)) {
+                    $article->like();
+                    $action = 'like';
+                    $_SESSION['article']['likes'][$article->id][] = $user_id;
+                } else {
+                    $article->unlike();
+                    $action = 'unlike';
+                    unset($_SESSION['article']['likes'][$article->id][$key]);
+                }
+                return json_encode([
+                    'action' => $action,
+                    'like_count' => $article->like
+                ]);
+            }
+        } else {
+            return json_encode([
+                'message' => 'Please, login for this action.'
+            ]);
+        }
     }
 }

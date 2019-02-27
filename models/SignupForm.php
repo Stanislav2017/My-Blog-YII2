@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 /**
@@ -47,23 +48,26 @@ class SignupForm extends Model
         ];
     }
 
+    public function signup()
+    {
+        $user = new User();
+        $user->username = $this->username;
+        $user->generateAuthKey();
+        $user->setPassword($this->password);
+        $user->email = $this->email;
+        $user->status = User::STATUS_ACTIVE;
+        $user->is_admin = User::POSITION_USER;
+
+        if(!$user->save()){
+            throw new \RuntimeException('Saving error.');
+        }
+
+        return $user;
+    }
+
     /**
      * Signs user up.
      *
      * @return User|null the saved model or null if saving fails
      */
-    public function signup()
-    {
-        if (!$this->validate()) {
-            return null;
-        }
-
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        return $user->save() ? $user : null;
-    }
-
 }

@@ -27,7 +27,8 @@ class CategoryController extends Controller
     public function actionView($alias)
     {
         $category = Category::find()->where(['alias' => $alias])->limit(1)->one();
-        $query = Article::find()->where(['category_id' => $category->id]);
+        $this->view->title = $category->title;
+        $query = Article::find()->where(['category_id' => $category->id, 'status' => Article::STATUS_PUBLISHED]);
         $countQuery = clone $query;
         $pages = new Pagination([
             'totalCount' => $countQuery->count(),
@@ -37,7 +38,6 @@ class CategoryController extends Controller
         $models = $query->offset($pages->offset)
             ->limit($pages->limit)
             ->all();
-        $this->view->title = $category->title;
 
         return $this->render('view', [
             'models' => $models,

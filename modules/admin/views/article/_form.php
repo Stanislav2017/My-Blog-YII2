@@ -22,7 +22,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'date')->input('date') ?>
 
-    <?= $form->field($model, 'image')->fileInput() ?>
+    <?= $form->field($model, 'preview')->fileInput() ?>
 
     <?= $form->field($model, 'viewed')->textInput() ?>
 

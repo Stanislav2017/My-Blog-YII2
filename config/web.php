@@ -49,8 +49,8 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '<action:(index|logout|sign-in|sign-up|view)>' => 'site/<action>',
                 'category/<alias:\w+>' => 'category/view',
-                /*'<action:index|sign-in|sign-up|logout>' => 'site/<action>',*/
             ],
         ],
 

@@ -80,10 +80,9 @@ class ArticleController extends Controller
     {
         $model = new Article();
         $categories = Category::find()->all();
-        $model->scenario = Article::SCENARIO_CREATE;
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            $file =  UploadedFile::getInstance($model, 'image');
+            $file =  UploadedFile::getInstance($model, 'preview');
             $model->image = !$file ? $this->saveDefaultImage('article') : $this->saveImage('article', $file);
             $model->save(false);
             return $this->redirect(['view', 'id' => $model->id]);
@@ -106,10 +105,9 @@ class ArticleController extends Controller
     {
         $model = $this->findModel($id);
         $image = $model->image;
-        $model->scenario = Article::SCENARIO_UPDATE;
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($file =  UploadedFile::getInstance($model, 'image')) {
+            if ($file =  UploadedFile::getInstance($model, 'preview')) {
                 $this->deleteFile('article', $image);
                 $model->image = $this->saveImage('article', $file);
             }

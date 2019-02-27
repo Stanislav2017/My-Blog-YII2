@@ -9,6 +9,7 @@ class BlogAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'css/font-awesome.min.css',
         "css/bootstrap.min.css",
         "css/blog-home.css",
     ];
@@ -21,7 +22,7 @@ class BlogAsset extends AssetBundle
     ];
 
     public $depends = [
-        /*'yii\web\YiiAsset',*/
+        'yii\web\YiiAsset',
         /*'yii\bootstrap\BootstrapPluginAsset',*/
     ];
 }

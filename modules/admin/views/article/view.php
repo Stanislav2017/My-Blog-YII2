@@ -36,6 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => ['image', ['width' => '200', 'height' => '100']],
             ],
             'title',
+            'alias',
+            'like',
             'description:ntext',
             'content:ntext',
             'date',
