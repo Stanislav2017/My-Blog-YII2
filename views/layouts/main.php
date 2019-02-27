@@ -27,35 +27,34 @@ BlogAsset::register($this);
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="<?php echo Url::toRoute('site/index') ?>">My Blog</a>
+        <a class="navbar-brand" href="<?php echo Url::home() ?>">My Blog</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-                <li class="<?php echo (Url::current() == Url::toRoute(['site/index'])) ? 'nav-item active' : 'nav-item' ?>">
+                <li class="<?php echo (Url::current() == Url::to(['site/index'])) ? 'nav-item active' : 'nav-item' ?>">
                     <a class="nav-link" href="<?php echo Url::home() ?>">
                         Home
                         <?php echo (Url::current() == Url::home()) ? "<span class=\"sr-only\">(current)</span>" : '' ?>
                     </a>
                 </li>
                 <?php if (Yii::$app->user->isGuest) : ?>
-                    <li class="<?php echo (Url::current() == Url::toRoute(['site/sign-in'])) ? 'nav-item active' : 'nav-item'?>">
-                        <a class="nav-link" href="<?php echo Url::toRoute(['site/sign-in']) ?>">
+                    <li class="<?php echo (Url::current() == Url::to(['site/sign-in'])) ? 'nav-item active' : 'nav-item'?>">
+                        <a class="nav-link" href="<?php echo Url::to(['site/sign-in']) ?>">
                             Sign In
-                            <?php echo (Url::current() == Url::toRoute(['site/sign-in'])) ? "<span class=\"sr-only\">(current)</span>" : '' ?>
+                            <?php echo (Url::current() == Url::to(['site/sign-in'])) ? "<span class=\"sr-only\">(current)</span>" : '' ?>
                         </a>
                     </li>
-                    <li class="<?php echo (Url::current() == Url::toRoute(['site/sign-up'])) ? 'nav-item active' : 'nav-item'?>">
-                        <a class="nav-link" href="<?php echo Url::toRoute(['site/sign-up']) ?>">
+                    <li class="<?php echo (Url::current() == Url::to(['site/sign-up'])) ? 'nav-item active' : 'nav-item'?>">
+                        <a class="nav-link" href="<?php echo Url::to(['site/sign-up']) ?>">
                             Sign Up
-                            <?php echo (Url::current() == Url::toRoute(['site/sign-up'])) ? "<span class=\"sr-only\">(current)</span>" : '' ?>
+                            <?php echo (Url::current() == Url::to(['site/sign-up'])) ? "<span class=\"sr-only\">(current)</span>" : '' ?>
                         </a>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
                         <?= Html::a('Logout', ['site/logout'], ['data' => ['method' => 'post'], 'class' => 'nav-link']) ?>
-                       <!-- <a class="nav-link" href="<?php /*echo Url::toRoute(['site/logout'])  */?>">Logout</a>-->
                     </li>
                     <li class="nav-item">
                         <a class="nav-link">Hi, <?php echo strtoupper(Yii::$app->user->identity->username) ?>...</a>

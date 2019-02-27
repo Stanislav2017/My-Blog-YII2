@@ -32,6 +32,13 @@ class SiteController extends Controller
     public function beforeAction($action)
     {
         /*$this->enableCsrfValidation = false;*/
+        $this->opeSessionIfNotExist();
+        $likes = Like::find()->asArray()->all();
+        if (!isset($_SESSION['article']['likes'])) {
+            foreach ($likes as $like) {
+                $_SESSION[$like['object_type']]['likes'][$like['object_id']][] = $like['user_id'];
+            }
+        }
         $categories = [];
         $element_number = 0;
         foreach (Category::find()->asArray()->limit(6)->all() as $key => $category) {
@@ -121,7 +128,7 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()))  {
             if ($model->login()) {
                 $this->refresh();
-                return $this->redirect(Url::toRoute('site/index'));
+                return $this->redirect(Url::home());
             }
         }
         return $this->render('signin', ['model' => $model]);
@@ -173,20 +180,27 @@ class SiteController extends Controller
                     throw new NotFoundHttpException('Article not found');
                 }
                 $user_id = Yii::$app->user->id;
-                $session = Yii::$app->session;
-                if (!$session->isActive) {
-                    $session->open();
-                }
+                $like = Like::find()
+                    ->where(['object_id' => $id, 'user_id' => $user_id, 'object_type' => 'article'])
+                    ->limit(1)
+                    ->one();
 
-                $key = array_search($user_id, (!isset($_SESSION['article']['likes'][$article->id]) ? [] : $_SESSION['article']['likes'][$article->id]));
-                if (is_bool($key)) {
+                $this->opeSessionIfNotExist();
+
+                if (!$like) {
                     $article->like();
+                    $like = new Like(['object_id' => $article->id, 'object_type' => 'article', 'user_id' => $user_id]);
+                    $like->save();
                     $action = 'like';
                     $_SESSION['article']['likes'][$article->id][] = $user_id;
                 } else {
                     $article->unlike();
+                    $like->delete();
                     $action = 'unlike';
-                    unset($_SESSION['article']['likes'][$article->id][$key]);
+                    $key = array_search($user_id, $_SESSION['article']['likes'][$article->id]);
+                    if (!is_bool($key)) {
+                        unset($_SESSION['article']['likes'][$article->id][$key]);
+                    }
                 }
                 return json_encode([
                     'action' => $action,
@@ -197,6 +211,14 @@ class SiteController extends Controller
             return json_encode([
                 'message' => 'Please, login for this action.'
             ]);
+        }
+    }
+
+    private function opeSessionIfNotExist()
+    {
+        $session = Yii::$app->session;
+        if (!$session->isActive) {
+            $session->open();
         }
     }
 }
