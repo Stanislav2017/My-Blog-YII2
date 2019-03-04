@@ -30,14 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'title',
             'alias',
-            'like:integer',
+            /*'likes_count:integer',*/
             'description:ntext',
             'content:ntext',
             'date',
             //'image',
-            'viewed',
+            /*'viewed',*/
             //'user_id',
-            'category_id',
+            /*'category_id',*/
             [
                 'attribute' => 'status',
                 'format' => 'html',

@@ -6,7 +6,7 @@ use yii\helpers\Html;
 use yii\widgets\LinkPager;
 ?>
 <!-- Blog Entries Column -->
-<div class="col-md-8">
+<div class="col-md-12">
     <h2 class="<?php echo isset($this->title) ? 'my-4' : 'my-4 text-success' ?>">
         <?php echo isset($this->title) ? $this->title : 'Article in this category not found!!!' ?>
     </h2>
@@ -18,7 +18,7 @@ use yii\widgets\LinkPager;
                 <div class="card-body">
                     <h2 class="card-title"><?php echo $model->title ?></h2>
                     <p class="card-text"><?php echo $model->content ?></p>
-                    <?php echo Html::a('Read More  &rarr;', ['site/view', 'alias' => $model->alias], ['class' => 'btn btn-primary']) ?>
+                    <?php echo Html::a('Read More  &rarr;', ['site/view', 'alias' => $model->alias], ['class' => 'btn btn-secondary']) ?>
                 </div>
                 <div class="card-footer text-muted">
                     Posted on <?php echo date('M d, Y', strtotime($model->date)); ?>
@@ -27,10 +27,10 @@ use yii\widgets\LinkPager;
                     <span class="float-right">
                         <i id="like"
                            data-id="<?php echo $model->id ?>"
-                           class="<?php echo (isset($_SESSION['article']['likes'][$model->id]) && in_array(Yii::$app->user->id, $_SESSION['article']['likes'][$model->id])) ? "fa fa-heart" : "fa fa-heart-o" ?>"> <?php echo $model->like ?></i>
+                           class="<?php echo (isset($_SESSION['article']['likes'][$model->id]) && in_array(Yii::$app->user->id, $_SESSION['article']['likes'][$model->id])) ? "fa fa-heart" : "fa fa-heart-o" ?>"> <?php echo $model->likes_count ?></i>
 
                         <i class="fa fa-eye" ></i> <?php echo $model->viewed ?>
-                        <i class="fa fa-comments"></i> <?php echo $model->getCommentsCount() ?>
+                        <i class="fa fa-comments"></i> <?php echo $model->comments_count ?>
                     </span>
                 </div>
             </div>

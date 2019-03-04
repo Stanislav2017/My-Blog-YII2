@@ -1,8 +1,8 @@
 $(function () {
-    $('#search-button').on('click', function() {
+    /*$('#search-button').on('click', function() {
         var search = $('#search').val();
         window.location = '?search=' + search;
-        /*$.ajax({
+        $.ajax({
             'url': '/',
             'method': 'get',
             'data': {
@@ -14,15 +14,15 @@ $(function () {
             error: function(data) {
                 console.log("Error");
             }
-        });*/
-    });
+        });
+    });*/
 
-    $('#like').on('click', function () {
-        var id = $(this).data('id');
+    $(document).on('click', '#like', function () {
+        var like = $(this);
+        var id = like.data('id');
         var token = $('meta[name=csrf-token]').attr("content");
-        var like = $('#like');
         $.ajax({
-            'url': '/site/like',
+            'url': '/like',
             'method': 'post',
             'data': {
                 'id': id,
@@ -42,7 +42,7 @@ $(function () {
                 }
             },
             error: function(data) {
-                console.log("Error" + data);
+                console.log("Error" + JSON.parse(data));
             }
         });
         return false;

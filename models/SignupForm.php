@@ -55,7 +55,7 @@ class SignupForm extends Model
         $user->generateAuthKey();
         $user->setPassword($this->password);
         $user->email = $this->email;
-        $user->status = User::STATUS_ACTIVE;
+        $user->status = User::STATUS_WAIT;
         $user->is_admin = User::POSITION_USER;
 
         if(!$user->save()){

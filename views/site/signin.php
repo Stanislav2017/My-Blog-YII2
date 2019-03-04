@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 $this->title = 'Sign In';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="col-md-8">
+<div class="col-md-12">
     <h3 class="my-4">Sign In</h3>
     <div class="card mb-4">
         <div class="card-body">

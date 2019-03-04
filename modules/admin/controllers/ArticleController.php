@@ -46,7 +46,7 @@ class ArticleController extends Controller
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'statuses' => [Article::STATUS_CREATED => 'Created', Article::STATUS_PUBLISHED => 'Published']
+            'statuses' => [Article::STATUS_WAIT => 'WAIT', Article::STATUS_PUBLISHED => 'PUBLISHED']
         ]);
     }
 

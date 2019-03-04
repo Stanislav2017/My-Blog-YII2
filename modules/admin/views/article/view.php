@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'title',
             'alias',
-            'like',
+            'likes_count',
             'description:ntext',
             'content:ntext',
             'date',

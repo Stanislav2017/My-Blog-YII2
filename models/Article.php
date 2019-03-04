@@ -29,7 +29,7 @@ class Article extends \yii\db\ActiveRecord
     public $image_path;
     public $preview;
 
-    const STATUS_CREATED = 0;
+    const STATUS_WAIT = 0;
     const STATUS_PUBLISHED = 1;
 
     public function beforeSave($insert)
@@ -60,8 +60,8 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['title'], 'required'],
-            [['status'], 'integer', 'min' => self::STATUS_CREATED, 'max' => self::STATUS_PUBLISHED],
-            [['status'], 'default', 'value' =>  self::STATUS_CREATED],
+            [['status'], 'integer', 'min' => self::STATUS_WAIT, 'max' => self::STATUS_PUBLISHED],
+            [['status'], 'default', 'value' =>  self::STATUS_WAIT],
             [['title', 'description', 'content'], 'string'],
             [['date'], 'default', 'value' => date('Y-m-d')],
             [['viewed'], 'default', 'value' => 0],
@@ -71,8 +71,8 @@ class Article extends \yii\db\ActiveRecord
                 /*'targetClass' => Article::class,
                 'targetAttribute' => ['category_id' => 'id']*/
             ],
-            [['like'], 'integer'],
-            [['like'], 'default', 'value' =>  0],
+            [['likes_count'], 'integer'],
+            [['likes_count'], 'default', 'value' =>  0],
         ];
     }
 
@@ -101,18 +101,6 @@ class Article extends \yii\db\ActiveRecord
        $this->save(false);
    }
 
-   public function like()
-   {
-       $this->like += 1;
-       $this->save(false);
-   }
-
-   public function unlike()
-   {
-       $this->like -= 1;
-       $this->save(false);
-   }
-
    public function publish()
    {
        $this->status = !$this->status;
@@ -131,11 +119,44 @@ class Article extends \yii\db\ActiveRecord
 
    public function getComments()
    {
-       return $this->hasMany(Comment::class, ['article_id' => 'id']);
+       return $this->hasMany(Comment::class, ['article_id' => 'id'])->where(['status' => Comment::STATUS_PUBLISHED]);
    }
 
-    public function getCommentsCount()
+   public function getLikes()
+   {
+       return $this->hasMany(Like::class, ['object_id' => 'id']);
+   }
+
+    public function addComment(Comment $comment)
     {
-        return $this->getComments()->count();
+        $this->comments_count += 1;
+        $this->save(false);
+        $this->link('comments', $comment);
+    }
+
+    public function removeComment(Comment $comment)
+    {
+        $this->comments_count -= 1;
+        $this->save(false);
+        $comment->delete();
+    }
+
+    public function addLike(Like $like)
+    {
+        $this->likes_count += 1;
+        $this->save(false);
+        $this->link('likes', $like);
+    }
+
+    public function removeLike(Like $like)
+    {
+        $this->likes_count -= 1;
+        $this->save(false);
+        $like->delete();
+    }
+
+    public function getImagePath()
+    {
+        return '@web/' . $this->buildFilePath('article', $this['image']);
     }
 }

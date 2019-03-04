@@ -64,7 +64,7 @@ class ArticleSearch extends Article
             'user_id' => $this->user_id,
             'status' => $this->status,
             'category_id' => $this->category_id,
-            'like' => $this->like,
+            'likes_count' => $this->likes_count,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
